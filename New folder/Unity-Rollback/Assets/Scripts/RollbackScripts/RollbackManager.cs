@@ -35,13 +35,13 @@ namespace RollbackSys
         {
             if (Input.GetKey(KeyCode.A))
             {
-                TryDeactivateRollback();
+                TryActivateRollback();
                 
                 OnRollbackRequested?.Invoke(ERollbackDirection.Backward);
             }
             else if (Input.GetKey(KeyCode.D))
             {
-                TryDeactivateRollback();
+                TryActivateRollback();
                 
                 OnRollbackRequested?.Invoke(ERollbackDirection.Forward);
             }
@@ -49,7 +49,7 @@ namespace RollbackSys
                 SwitchRollback();
         }
 
-        private void TryDeactivateRollback()
+        private void TryActivateRollback()
         {
             if (!_isActive)
                 OnRollbackActivated?.Invoke();

@@ -1,7 +1,6 @@
-﻿using RollbackSys;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace GunSys
+namespace RollbackSys
 {
     public class PhysicRetrievableTimeStamp : RetrievableTimeStampBase
     {
@@ -21,8 +20,6 @@ namespace GunSys
     
     public class PhysicsRetrievable : RetrievableBase<PhysicRetrievableTimeStamp>
     {
-        [SerializeField] private Rigidbody _rigidbody;
-        
         protected override bool ExecuteTimeStamp(PhysicRetrievableTimeStamp timeStamp)
         {
             transform.position = timeStamp.Position;

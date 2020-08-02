@@ -59,10 +59,10 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\GunScripts\Bullet.cs" />
-     <Compile Include="Assets\Scripts\GunScripts\BulletRetrievable.cs" />
      <Compile Include="Assets\Scripts\GunScripts\Gun.cs" />
      <Compile Include="Assets\Scripts\PlayerScripts\PlayerInputController.cs" />
      <Compile Include="Assets\Scripts\PlayerScripts\PlayerShootingController.cs" />
+     <Compile Include="Assets\Scripts\RollbackScripts\PhysicsRetrievable.cs" />
      <Compile Include="Assets\Scripts\RollbackScripts\RetrievableBase.cs" />
      <Compile Include="Assets\Scripts\RollbackScripts\RollbackManager.cs" />
  <Reference Include="Unity.Timeline.Editor">

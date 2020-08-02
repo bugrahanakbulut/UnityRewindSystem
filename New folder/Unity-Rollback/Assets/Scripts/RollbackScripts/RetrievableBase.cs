@@ -12,8 +12,8 @@ namespace RollbackSys
 
         [SerializeField] protected int _maxTimeStampCount = 180;
         
-        private Stack<T> _timeStamps = new Stack<T>();
-        private Stack<T> _backUpStamps = new Stack<T>();
+        List<T> _timeStamps = new List<T>();
+        private List<T> _backUpTimeStamps = new List<T>();
 
         private bool _canSaveTimeStamps = true;
 
@@ -26,7 +26,7 @@ namespace RollbackSys
             RegisterToRollbackManager();
         }
 
-        private void Update()
+        private void FixedUpdate()
         {
             UpdateTimeStamps();
         }
@@ -58,14 +58,14 @@ namespace RollbackSys
             
             if (_timeStamps.Count == _maxTimeStampCount)
             {
-                _timeStamps.Pop();
+                _timeStamps.RemoveAt(0);
                 
-                _timeStamps.Push(GetTimeStamp());
+                _timeStamps.Add(GetTimeStamp());
                 
                 return;
             }
             
-            _timeStamps.Push(GetTimeStamp());
+            _timeStamps.Add(GetTimeStamp());
         }
 
         private void OnRollbackActivated()
@@ -79,6 +79,10 @@ namespace RollbackSys
 
         private void OnRollbackDeactivated()
         {
+            _timeStamps = new List<T>();
+            
+            _backUpTimeStamps = new List<T>();
+            
             _rigidbody.isKinematic = false;
             
             _canSaveTimeStamps = true;
@@ -88,20 +92,24 @@ namespace RollbackSys
 
         private void OnRollbackRequested(ERollbackDirection eRollbackDirection)
         {
-            if (eRollbackDirection == ERollbackDirection.Backward)
+            if (eRollbackDirection == ERollbackDirection.Backward && _timeStamps.Count > 0)
             {
-                T timeStamp = _timeStamps.Pop();
+                T timeStamp = _timeStamps[_timeStamps.Count - 1];
                 
-                _backUpStamps.Push(timeStamp);
+                _timeStamps.RemoveAt(_timeStamps.Count - 1);
+                
+                _backUpTimeStamps.Add(timeStamp);
 
                 ExecuteTimeStamp(timeStamp);
             }
             
-            else if (eRollbackDirection == ERollbackDirection.Forward)
+            else if (eRollbackDirection == ERollbackDirection.Forward && _backUpTimeStamps.Count > 0)
             {
-                T timeStamp = _backUpStamps.Pop();
+                T timeStamp = _backUpTimeStamps[_backUpTimeStamps.Count - 1];
                 
-                _timeStamps.Push(timeStamp);
+                _backUpTimeStamps.RemoveAt(_backUpTimeStamps.Count - 1);
+                
+                _timeStamps.Add(timeStamp);
 
                 ExecuteTimeStamp(timeStamp);
             }
