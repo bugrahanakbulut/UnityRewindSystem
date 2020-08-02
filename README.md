@@ -1,2 +1,7 @@
 # Unity-Rollback
-simple rollback mechanism made with unity
+Simple Rollback / Rewind Mechnism made by Unity
+
+## Controlls
+Space : Activating / Deactivating Rollback Mode
+A - D : Rewind 
+
