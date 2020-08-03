@@ -6,11 +6,11 @@ namespace GunSys
     {
         [SerializeField] private Rigidbody _rigidbody;
         
-        [SerializeField] private Vector3 _bulletForce = new Vector3(0, 0, 100f);
+        [SerializeField] private float _bulletForce = 2500;
         
         public void Throw()
         {
-            _rigidbody.AddForce(_bulletForce, ForceMode.Force);
+            _rigidbody.AddForce(_bulletForce * transform.forward.normalized, ForceMode.Force);
         }
     }
 }

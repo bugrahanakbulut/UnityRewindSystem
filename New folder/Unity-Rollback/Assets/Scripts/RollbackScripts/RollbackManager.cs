@@ -33,13 +33,13 @@ namespace RollbackSys
         
         private void Update()
         {
-            if (Input.GetKey(KeyCode.A))
+            if (Input.GetKey(KeyCode.Z))
             {
                 TryActivateRollback();
                 
                 OnRollbackRequested?.Invoke(ERollbackDirection.Backward);
             }
-            else if (Input.GetKey(KeyCode.D))
+            else if (Input.GetKey(KeyCode.C))
             {
                 TryActivateRollback();
                 
