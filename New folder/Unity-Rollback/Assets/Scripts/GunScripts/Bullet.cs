@@ -1,8 +1,9 @@
-﻿using UnityEngine;
+﻿using RollbackSys;
+using UnityEngine;
 
 namespace GunSys
 {
-    public class Bullet : MonoBehaviour
+    public class Bullet : PhysicsRetrievable
     {
         [SerializeField] private Rigidbody _rigidbody;
         
@@ -10,6 +11,20 @@ namespace GunSys
         
         public void Throw()
         {
+            _rigidbody.AddForce(_bulletForce * transform.forward.normalized, ForceMode.Force);
+        }
+
+        protected override void SpawnedAtActiveRollbackCustomActions()
+        {
+            RollbackManager.Instance.OnRollbackDeactivated += OnRollbackDeactivatedCA;
+            
+            OnRollbackActivated();
+        }
+
+        private void OnRollbackDeactivatedCA()
+        {
+            RollbackManager.Instance.OnRollbackDeactivated -= OnRollbackDeactivatedCA;
+            
             _rigidbody.AddForce(_bulletForce * transform.forward.normalized, ForceMode.Force);
         }
     }

@@ -27,6 +27,14 @@ namespace RollbackSys
 
         private bool _isActive;
 
+        public bool IsActive
+        {
+            get
+            {
+                return _isActive;
+            }
+        }
+
         public Action OnRollbackActivated { get; set; }
         public Action OnRollbackDeactivated { get; set; }
         public Action<ERollbackDirection> OnRollbackRequested { get; set; }

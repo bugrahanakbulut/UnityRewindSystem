@@ -24,6 +24,9 @@ namespace RollbackSys
         protected virtual void Awake()
         {
             RegisterToRollbackManager();
+
+            if (RollbackManager.Instance.IsActive)
+                SpawnedAtActiveRollbackCustomActions();
         }
 
         private void FixedUpdate()
@@ -68,7 +71,7 @@ namespace RollbackSys
             _timeStamps.Add(GetTimeStamp());
         }
 
-        private void OnRollbackActivated()
+        protected virtual void OnRollbackActivated()
         {
             _rigidbody.isKinematic = true;
 
@@ -77,7 +80,7 @@ namespace RollbackSys
             RollbackActivatedCustomActions();
         }
 
-        private void OnRollbackDeactivated()
+        protected virtual void OnRollbackDeactivated()
         {
             _timeStamps = new List<T>();
             
@@ -90,7 +93,7 @@ namespace RollbackSys
             RollbackDectivatedCustomActions();
         }
 
-        private void OnRollbackRequested(ERollbackDirection eRollbackDirection)
+        protected virtual void OnRollbackRequested(ERollbackDirection eRollbackDirection)
         {
             if (eRollbackDirection == ERollbackDirection.Backward && _timeStamps.Count > 0)
             {
@@ -120,6 +123,10 @@ namespace RollbackSys
         }
 
         protected virtual void RollbackDectivatedCustomActions()
+        {
+        }
+
+        protected virtual void SpawnedAtActiveRollbackCustomActions()
         {
         }
     }

@@ -57,6 +57,7 @@
      <Compile Include="Assets\Scripts\GunScripts\Gun.cs" />
      <Compile Include="Assets\Scripts\PlayerScripts\PlayerShootingController.cs" />
      <Compile Include="Assets\Scripts\PlayerScripts\PlayerInputController.cs" />
+     <Compile Include="Assets\Scripts\PlayerScripts\PlayerRotationController.cs" />
  <Reference Include="Unity.Timeline.Editor">
  <HintPath>C:/Users/akbul/Desktop/workspace/Unity/Unity-Rollback/New folder/Unity-Rollback/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
  </Reference>

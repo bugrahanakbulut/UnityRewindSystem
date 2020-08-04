@@ -6,7 +6,8 @@ namespace PlayerSys
     public class PlayerInputController : MonoBehaviour
     {
         [SerializeField] private CharacterController _characterController;
-        
+
+        [SerializeField] private PlayerRotationController _playerRotationController;
         
         public Action OnFireTriggered { get; set; }
 
@@ -16,6 +17,8 @@ namespace PlayerSys
                 OnFireTriggered?.Invoke();
 
             CheckCharacterControllerInput();
+
+            CheckMouseInput();
         }
 
         private void CheckCharacterControllerInput()
@@ -28,6 +31,13 @@ namespace PlayerSys
             Vector3 forward = transform.forward.normalized * verticalInput;
             
             _characterController.SimpleMove(right + forward);
+        }
+
+        private void CheckMouseInput()
+        {
+            float horizontalInput = Input.GetAxis("Mouse X");
+
+            _playerRotationController.Rotate(horizontalInput);
         }
     }
 }
