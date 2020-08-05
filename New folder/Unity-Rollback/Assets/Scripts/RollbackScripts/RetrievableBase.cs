@@ -12,10 +12,10 @@ namespace RollbackSys
 
         [SerializeField] protected int _maxTimeStampCount = 180;
         
-        List<T> _timeStamps = new List<T>();
-        private List<T> _backUpTimeStamps = new List<T>();
+        [SerializeField] private List<T> _timeStamps = new List<T>();
+        [SerializeField] private List<T> _backUpTimeStamps = new List<T>();
 
-        private bool _canSaveTimeStamps = true;
+        protected bool _canSaveTimeStamps = true;
 
         protected abstract bool ExecuteTimeStamp(T timeStamp);
         
@@ -26,7 +26,11 @@ namespace RollbackSys
             RegisterToRollbackManager();
 
             if (RollbackManager.Instance.IsActive)
+            {
+                _canSaveTimeStamps = false;
+                
                 SpawnedAtActiveRollbackCustomActions();
+            }
         }
 
         private void FixedUpdate()

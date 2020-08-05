@@ -30,7 +30,7 @@ namespace PlayerSys
 
             Vector3 forward = transform.forward.normalized * verticalInput;
             
-            _characterController.SimpleMove(right + forward);
+            _characterController.SimpleMove((right + forward) * 2.5f);
         }
 
         private void CheckMouseInput()

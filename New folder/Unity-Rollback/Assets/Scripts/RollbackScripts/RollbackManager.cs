@@ -60,9 +60,11 @@ namespace RollbackSys
         private void TryActivateRollback()
         {
             if (!_isActive)
+            {
+                _isActive = true;
+                
                 OnRollbackActivated?.Invoke();
-
-            _isActive = !_isActive;
+            }
         }
         
         

@@ -20,12 +20,14 @@ namespace RollbackSys
     
     public class PhysicsRetrievable : RetrievableBase<PhysicRetrievableTimeStamp>
     {
+        private Vector3 _lastExecutedVelocity;
+        
         protected override bool ExecuteTimeStamp(PhysicRetrievableTimeStamp timeStamp)
         {
             transform.position = timeStamp.Position;
             transform.rotation = timeStamp.Rotation;
 
-            _rigidbody.velocity = timeStamp.Velocity;
+            _lastExecutedVelocity = timeStamp.Velocity;
             
             return true;
         }
@@ -33,6 +35,13 @@ namespace RollbackSys
         protected override PhysicRetrievableTimeStamp GetTimeStamp()
         {
             return new PhysicRetrievableTimeStamp(transform.position, transform.rotation, _rigidbody.velocity);
+        }
+
+        protected override void RollbackDectivatedCustomActions()
+        {
+            base.RollbackDectivatedCustomActions();
+
+            _rigidbody.AddForce(_lastExecutedVelocity, ForceMode.VelocityChange);
         }
     }
 }

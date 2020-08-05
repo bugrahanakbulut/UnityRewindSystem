@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 1171152317539708138}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.15, y: 0.15, z: 0.15}
+  m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
   m_Children: []
   m_Father: {fileID: 1171152317699886165}
   m_RootOrder: 0
@@ -93,7 +93,6 @@ GameObject:
   - component: {fileID: 1171152317699886166}
   - component: {fileID: 1171152317699886167}
   - component: {fileID: 7399358649233563419}
-  - component: {fileID: 901119381541597846}
   m_Layer: 0
   m_Name: Bullet
   m_TagString: Untagged
@@ -131,7 +130,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 3
 --- !u!135 &1171152317699886167
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -143,7 +142,7 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.075
+  m_Radius: 0.125
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &7399358649233563419
 MonoBehaviour:
@@ -158,18 +157,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rigidbody: {fileID: 1171152317699886166}
-  _bulletForce: {x: 0, y: 0, z: 1000}
---- !u!114 &901119381541597846
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1171152317699886184}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 13fcc372d55d4e64b0eea3a683227a5c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _rigidbody: {fileID: 1171152317699886166}
   _maxTimeStampCount: 180
+  _bulletForce: 2500

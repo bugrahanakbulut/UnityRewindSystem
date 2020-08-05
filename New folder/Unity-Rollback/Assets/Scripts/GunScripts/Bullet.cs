@@ -5,8 +5,6 @@ namespace GunSys
 {
     public class Bullet : PhysicsRetrievable
     {
-        [SerializeField] private Rigidbody _rigidbody;
-        
         [SerializeField] private float _bulletForce = 2500;
         
         public void Throw()
