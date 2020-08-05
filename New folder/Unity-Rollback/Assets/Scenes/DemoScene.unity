@@ -804,7 +804,7 @@ GameObject:
   - component: {fileID: 852364318}
   - component: {fileID: 852364317}
   m_Layer: 0
-  m_Name: RollbackManager
+  m_Name: RewindManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

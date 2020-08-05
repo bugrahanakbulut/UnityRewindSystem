@@ -1,9 +1,10 @@
-﻿using RollbackSys;
+﻿using System.Collections;
+using RewindSystem;
 using UnityEngine;
 
-namespace GunSys
+namespace GunSystem
 {
-    public class Bullet : PhysicsRetrievable
+    public class Bullet : BasicPhysicalRewindable
     {
         [SerializeField] private float _bulletForce = 2500;
         
@@ -12,18 +13,49 @@ namespace GunSys
             _rigidbody.AddForce(_bulletForce * transform.forward.normalized, ForceMode.Force);
         }
 
-        protected override void SpawnedAtActiveRollbackCustomActions()
+        protected override void Awake()
         {
-            RollbackManager.Instance.OnRollbackDeactivated += OnRollbackDeactivatedCA;
+            base.Awake();
+
+            if (_canSaveTimeStamps)
+            {
+                _canSaveTimeStamps = false;
+
+                StartCoroutine(DelayProgress());
+            }
+        }
+
+        protected override void RewindDectivatedCustomActions()
+        {
+            base.RewindDectivatedCustomActions();
             
-            OnRollbackActivated();
+            if (_canSaveTimeStamps)
+            {
+                _canSaveTimeStamps = false;
+
+                StartCoroutine(DelayProgress());
+            }
+        }
+
+        protected override void SpawnedAtActiveRewindCustomActions()
+        {
+            RewindManager.Instance.OnRewindModeDeactivated += OnRollbackDeactivatedCA;
+            
+            OnRewindActivated();
         }
 
         private void OnRollbackDeactivatedCA()
         {
-            RollbackManager.Instance.OnRollbackDeactivated -= OnRollbackDeactivatedCA;
+            RewindManager.Instance.OnRewindModeDeactivated -= OnRollbackDeactivatedCA;
             
             _rigidbody.AddForce(_bulletForce * transform.forward.normalized, ForceMode.Force);
+        }
+
+        private IEnumerator DelayProgress()
+        {
+            yield return new WaitForFixedUpdate();
+
+            _canSaveTimeStamps = !RewindManager.Instance.IsActive;
         }
     }
 }
