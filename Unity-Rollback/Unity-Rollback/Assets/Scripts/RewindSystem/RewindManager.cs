@@ -25,13 +25,13 @@ namespace RewindSystem
             }
         }
 
-        private bool _isActive;
+        private bool _isRewindActive;
 
-        public bool IsActive
+        public bool IsRewindActive
         {
             get
             {
-                return _isActive;
+                return _isRewindActive;
             }
         }
 
@@ -59,23 +59,22 @@ namespace RewindSystem
 
         private void TryActivateRewindMode()
         {
-            if (!_isActive)
+            if (!_isRewindActive)
             {
-                _isActive = true;
+                _isRewindActive = true;
                 
                 OnRewindModeActivated?.Invoke();
             }
         }
-        
-        
+
         private void SwitchRewindMode()
         {
-            if (!_isActive)
+            if (!_isRewindActive)
                 OnRewindModeActivated?.Invoke();
             else
                 OnRewindModeDeactivated?.Invoke();
 
-            _isActive = !_isActive;
+            _isRewindActive = !_isRewindActive;
         }
     }
 }

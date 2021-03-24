@@ -1,41 +1,42 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace RewindSystem
 {
-    public abstract class RewindableTimeStampBase {}
+    public abstract class RewindableTimeStampBase { }
     
-    public abstract class RewindableBase : MonoBehaviour
+    public abstract class RewindableBase<T> : MonoBehaviour
+    where T : RewindableTimeStampBase
     {
         [SerializeField] protected int _maxTimeStampCount = 180;
 
-        protected List<RewindableTimeStampBase> _timeStamps = new List<RewindableTimeStampBase>();
-        protected List<RewindableTimeStampBase> _backUpTimeStamps = new List<RewindableTimeStampBase>();
+        private List<T> _timeStamps = new List<T>();
         
-        protected abstract bool ExecuteTimeStamp(RewindableTimeStampBase timeStamp);
+        private List<T> _backUpTimeStamps = new List<T>();
         
-        protected abstract RewindableTimeStampBase GetTimeStamp();
+        protected abstract bool ExecuteTimeStamp(T timeStamp);
+        
+        protected abstract T GetTimeStamp();
 
-        protected abstract void OnRewindActivated();
-        protected abstract void OnRewindDeactivated();
-        protected abstract void OnRewindRequested(ERewindDirection eRewindDirection);
+        protected bool _canSaveTimeStamps = false;
         
-        
-        protected virtual void Awake()
+        protected void Awake()
         {
             RegisterToRollbackManager();
 
-            if (RewindManager.Instance.IsActive)
+            SetCanSaveTimeStamp(!RewindManager.Instance.IsRewindActive);
+            
+            if (RewindManager.Instance.IsRewindActive)
             {
-                _canSaveTimeStamps = false;
-                
-                SpawnedAtActiveRewindCustomActions();
+                OnRewindModeActivated();
             }
-        }
 
-        protected bool _canSaveTimeStamps = true;
+            AwakeCustomActions();
+        }
         
-        protected void FixedUpdate()
+        protected void Update()
         {
             UpdateTimeStamps();
         }
@@ -43,12 +44,14 @@ namespace RewindSystem
         protected void OnDestroy()
         {
             UnregisterFromRollbackManager();
+            
+            OnDestroyCustomActions();
         }
 
         private void RegisterToRollbackManager()
         {
-            RewindManager.Instance.OnRewindModeActivated += OnRewindActivated;
-            RewindManager.Instance.OnRewindModeDeactivated += OnRewindDeactivated;
+            RewindManager.Instance.OnRewindModeActivated += OnRewindModeActivated;
+            RewindManager.Instance.OnRewindModeDeactivated += OnRewindModeDeactivated;
             RewindManager.Instance.OnRewindRequested += OnRewindRequested;
         }
 
@@ -56,8 +59,8 @@ namespace RewindSystem
         {
             if (RewindManager.Instance == null) return;
             
-            RewindManager.Instance.OnRewindModeActivated -= OnRewindActivated;
-            RewindManager.Instance.OnRewindModeDeactivated -= OnRewindDeactivated;
+            RewindManager.Instance.OnRewindModeActivated -= OnRewindModeActivated;
+            RewindManager.Instance.OnRewindModeDeactivated -= OnRewindModeDeactivated;
             RewindManager.Instance.OnRewindRequested -= OnRewindRequested;
         }
         
@@ -68,25 +71,69 @@ namespace RewindSystem
             if (_timeStamps.Count == _maxTimeStampCount)
             {
                 _timeStamps.RemoveAt(0);
-                
-                _timeStamps.Add(GetTimeStamp());
-                
-                return;
             }
             
             _timeStamps.Add(GetTimeStamp());
         }
-        
-        protected virtual void RewindActivatedCustomActions()
+
+        private void OnRewindModeActivated()
         {
+            SetCanSaveTimeStamp(false);
+            
+            RewindActivatedCustomActions();
         }
 
-        protected virtual void RewindDectivatedCustomActions()
+        private void OnRewindModeDeactivated()
         {
+            _timeStamps = new List<T>();
+            
+            _backUpTimeStamps = new List<T>();
+
+            SetCanSaveTimeStamp(true);
+
+            RewindDectivatedCustomActions();
+        }
+
+        private void OnRewindRequested(ERewindDirection eRewindDirection)
+        {
+            if (eRewindDirection == ERewindDirection.Backward && _timeStamps.Count > 0)
+            {
+                T timeStamp =_timeStamps[_timeStamps.Count - 1];
+                
+                _timeStamps.RemoveAt(_timeStamps.Count - 1);
+                
+                _backUpTimeStamps.Add(timeStamp);
+
+                ExecuteTimeStamp(timeStamp);
+            }
+            
+            else if (eRewindDirection == ERewindDirection.Forward && _backUpTimeStamps.Count > 0)
+            {
+                T timeStamp = _backUpTimeStamps[_backUpTimeStamps.Count - 1];
+                
+                _backUpTimeStamps.RemoveAt(_backUpTimeStamps.Count - 1);
+                
+                _timeStamps.Add(timeStamp);
+
+                ExecuteTimeStamp(timeStamp);
+            }
+            
+            OnRewindRequestedCustomActions(eRewindDirection);
+        }
+
+        protected virtual void SetCanSaveTimeStamp(bool value)
+        {
+            _canSaveTimeStamps = value;
         }
         
-        protected virtual void SpawnedAtActiveRewindCustomActions()
-        {
-        }
+        protected virtual void AwakeCustomActions() { }
+        
+        protected virtual void OnDestroyCustomActions() { }
+        
+        protected virtual void RewindActivatedCustomActions() { }
+
+        protected virtual void RewindDectivatedCustomActions() { }
+
+        protected virtual void OnRewindRequestedCustomActions(ERewindDirection eRewindDirection) { }
     }
 }

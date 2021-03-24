@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using PoolingSystem;
+using UnityEngine;
 
 namespace GunSystem
 {
@@ -8,15 +9,39 @@ namespace GunSystem
 
         [SerializeField] private Transform _barrelTransform;
     
+        [SerializeField] private BulletFactory _bulletFactory = new BulletFactory();
+
+        [SerializeField] private int _initialBulletCount = 5;
+
+        [SerializeField] private float _bulletVelocity = 5f;
+        
+        private Pool<
+            BulletActivationInfo,
+            Bullet,
+            BulletFactory> _pool;
+
+        private Pool<
+            BulletActivationInfo,
+            Bullet,
+            BulletFactory> _Pool
+        {
+            get
+            {
+                if (_pool == null)
+                    _pool = new Pool<
+                        BulletActivationInfo,
+                        Bullet, 
+                        BulletFactory>(_bulletFactory, _initialBulletCount);
+
+                return _pool;
+            }
+        }
+        
         public void Shoot()
         {
-            Bullet bullet = Instantiate(_bullet);
+            GameObject bulletObj = Instantiate(_bullet.gameObject, _barrelTransform);
 
-            bullet.transform.position = _barrelTransform.position;
-
-            bullet.transform.rotation = _barrelTransform.rotation;
-            
-            bullet.Throw();
+            bulletObj.GetComponent<Bullet>().Throw(new BulletActivationInfo(_bulletVelocity, _barrelTransform.position, _barrelTransform.rotation));
         }
     }
 }
