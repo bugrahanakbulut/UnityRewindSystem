@@ -1,4 +1,5 @@
-﻿using PoolingSystem;
+﻿using System;
+using PoolingSystem;
 using UnityEngine;
 
 namespace GunSystem
@@ -23,12 +24,17 @@ namespace GunSystem
     {
         [SerializeField] private Rigidbody _rigidbody = null;
 
-        // TODO : remove asap integrate with pool
+        // TODO : integrate with pool asap
         
         // TODO : Bug Spawn in Rewind Mode
+        
+        public Action<BulletActivationInfo> OnBulletActivated { get; set; }
+        
         public void Throw(BulletActivationInfo activationInfo)
         {
             ActivateCustomActions(activationInfo);
+            
+            OnBulletActivated?.Invoke(activationInfo);
         }
         
         protected override void ActivateCustomActions(BulletActivationInfo activationInfo)

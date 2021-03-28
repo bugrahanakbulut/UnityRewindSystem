@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace RewindSystem
@@ -15,13 +13,15 @@ namespace RewindSystem
         private List<T> _timeStamps = new List<T>();
         
         private List<T> _backUpTimeStamps = new List<T>();
+
+        protected bool _canSaveTimeStamps = false;
+
+        protected T _lastExecutedTimeStamp = null;
         
         protected abstract bool ExecuteTimeStamp(T timeStamp);
         
         protected abstract T GetTimeStamp();
 
-        protected bool _canSaveTimeStamps = false;
-        
         protected void Awake()
         {
             RegisterToRollbackManager();
@@ -36,7 +36,7 @@ namespace RewindSystem
             AwakeCustomActions();
         }
         
-        protected void Update()
+        protected void FixedUpdate()
         {
             UpdateTimeStamps();
         }
@@ -79,8 +79,11 @@ namespace RewindSystem
         private void OnRewindModeActivated()
         {
             SetCanSaveTimeStamp(false);
+
+            if (_timeStamps.Count > 0)
+                _lastExecutedTimeStamp = _timeStamps[_timeStamps.Count - 1];
             
-            RewindActivatedCustomActions();
+            RewindActivatedCustomActions();    
         }
 
         private void OnRewindModeDeactivated()
@@ -92,6 +95,15 @@ namespace RewindSystem
             SetCanSaveTimeStamp(true);
 
             RewindDectivatedCustomActions();
+            
+            if (_lastExecutedTimeStamp != null)
+            {
+                ExecuteTimeStamp(_lastExecutedTimeStamp);
+                
+                _timeStamps.Add(_lastExecutedTimeStamp);
+
+                _lastExecutedTimeStamp = null;
+            }
         }
 
         private void OnRewindRequested(ERewindDirection eRewindDirection)
@@ -104,6 +116,8 @@ namespace RewindSystem
                 
                 _backUpTimeStamps.Add(timeStamp);
 
+                _lastExecutedTimeStamp = timeStamp;
+                
                 ExecuteTimeStamp(timeStamp);
             }
             
@@ -114,6 +128,8 @@ namespace RewindSystem
                 _backUpTimeStamps.RemoveAt(_backUpTimeStamps.Count - 1);
                 
                 _timeStamps.Add(timeStamp);
+                
+                _lastExecutedTimeStamp = timeStamp;
 
                 ExecuteTimeStamp(timeStamp);
             }
