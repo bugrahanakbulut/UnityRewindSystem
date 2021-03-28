@@ -11,7 +11,7 @@ namespace RewindSystem
         
         [SerializeField] private Rigidbody _rigidbody = null;
 
-        private RigidbodyTimeStamp _timeStampActivation = null;
+        private RigidbodyTimeStamp _activationTimeStamp = null;
         
         private IEnumerator _delayRoutine;
         
@@ -41,13 +41,11 @@ namespace RewindSystem
 
         protected override RigidbodyTimeStamp GetTimeStamp()
         {
-            if (_timeStampActivation != null)
+            if (_activationTimeStamp != null)
             {
-                RigidbodyTimeStamp tmp = _timeStampActivation;
+                RigidbodyTimeStamp tmp = _activationTimeStamp;
                 
-                _timeStampActivation = null;
-                
-                Debug.Log(tmp.Velocity);
+                _activationTimeStamp = null;
                 
                 return tmp;
             }
@@ -64,13 +62,13 @@ namespace RewindSystem
             base.RewindActivatedCustomActions();
         }
 
-        protected override void RewindDectivatedCustomActions()
+        protected override void RewindDeactivatedCustomActions()
         {
             _rigidbody.isKinematic = false;
 
             _rigidbody.useGravity = true;
 
-            base.RewindDectivatedCustomActions();
+            base.RewindDeactivatedCustomActions();
         }
         
         protected override void SetCanSaveTimeStamp(bool value)
@@ -96,11 +94,16 @@ namespace RewindSystem
         
         private void OnBulletActivated(BulletActivationInfo activationInfo)
         {
-            _timeStampActivation = 
+            _activationTimeStamp = 
                 new RigidbodyTimeStamp(
                     _rigidbody.position, 
                     activationInfo.BulletVelocity * transform.forward.normalized,
                     _rigidbody.rotation);
+
+            if (RewindManager.Instance.IsRewindActive)
+            {
+                _lastExecutedTimeStamp = _activationTimeStamp;
+            }
         }
     }
 }

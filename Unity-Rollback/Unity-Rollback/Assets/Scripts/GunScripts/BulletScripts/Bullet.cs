@@ -26,8 +26,6 @@ namespace GunSystem
 
         // TODO : integrate with pool asap
         
-        // TODO : Bug Spawn in Rewind Mode
-        
         public Action<BulletActivationInfo> OnBulletActivated { get; set; }
         
         public void Throw(BulletActivationInfo activationInfo)

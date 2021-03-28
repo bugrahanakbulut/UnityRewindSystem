@@ -10,7 +10,7 @@ namespace RewindSystem
     {
         [SerializeField] protected int _maxTimeStampCount = 180;
 
-        private List<T> _timeStamps = new List<T>();
+        protected List<T> _timeStamps = new List<T>();
         
         private List<T> _backUpTimeStamps = new List<T>();
 
@@ -81,7 +81,9 @@ namespace RewindSystem
             SetCanSaveTimeStamp(false);
 
             if (_timeStamps.Count > 0)
+            {
                 _lastExecutedTimeStamp = _timeStamps[_timeStamps.Count - 1];
+            }
             
             RewindActivatedCustomActions();    
         }
@@ -94,7 +96,7 @@ namespace RewindSystem
 
             SetCanSaveTimeStamp(true);
 
-            RewindDectivatedCustomActions();
+            RewindDeactivatedCustomActions();
             
             if (_lastExecutedTimeStamp != null)
             {
@@ -148,7 +150,7 @@ namespace RewindSystem
         
         protected virtual void RewindActivatedCustomActions() { }
 
-        protected virtual void RewindDectivatedCustomActions() { }
+        protected virtual void RewindDeactivatedCustomActions() { }
 
         protected virtual void OnRewindRequestedCustomActions(ERewindDirection eRewindDirection) { }
     }

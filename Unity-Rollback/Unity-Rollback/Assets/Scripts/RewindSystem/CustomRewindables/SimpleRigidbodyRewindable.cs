@@ -48,13 +48,13 @@ namespace RewindSystem
             base.RewindActivatedCustomActions();
         }
 
-        protected override void RewindDectivatedCustomActions()
+        protected override void RewindDeactivatedCustomActions()
         {
             _rigidbody.isKinematic = false;
 
             _rigidbody.useGravity = true;
         
-            base.RewindDectivatedCustomActions();
+            base.RewindDeactivatedCustomActions();
         }
     }    
 }
